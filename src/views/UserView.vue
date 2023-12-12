@@ -1,25 +1,15 @@
 <script setup>
 import {useRoute} from "vue-router";
-import {onBeforeMount, ref} from "vue";
-import axios from "axios";
 import ArticleUser from "@/components/ArticleUser.vue";
 import Loader from "@/components/Loader.vue";
 import {getUser} from "@/composable/api";
 
-const user = ref({})
-
-onBeforeMount(() => {
-  const route = useRoute()
-  setTimeout(() => {
-    getUser(route.params.userId).then(userData => {
-      user.value = userData;
-    })
-  }, 500)
-})
+const route = useRoute()
+const {user} = getUser(route.params.userId)
 </script>
 
 <template>
-  <div class="pageBody" v-if="user.user">
+  <div class="pageBody" v-if="user">
     <div class="profileContainer">
       <div class="profilePicture">
         <img src="https://picsum.photos/200" :alt="user.user.username">

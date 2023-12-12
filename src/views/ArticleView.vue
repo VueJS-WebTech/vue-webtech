@@ -1,26 +1,17 @@
 <script setup>
-import {onBeforeMount, ref} from "vue";
 import {useRoute} from "vue-router";
 import Comment from "@/components/Comment.vue";
 import router from "@/router";
 import Loader from "@/components/Loader.vue";
 import {getArticle} from "@/composable/api";
 
-const article = ref({})
-
-onBeforeMount(() => {
-  const route = useRoute()
-  setTimeout(() => {
-    getArticle(route.params.id).then(articleData => {
-      article.value = articleData;
-    })
-  }, 500)
-})
+const route = useRoute()
+const {article} = getArticle(route.params.id)
 </script>
 
 <template>
   <main>
-    <div class="serverInfosContainer" v-if="article.id">
+    <div class="serverInfosContainer" v-if="article">
       <div class="serverInfosBackground">
         <div class="serverInfosName">{{ article.title }}</div>
         <div class="serverInfosBackgroundImg"

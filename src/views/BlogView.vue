@@ -1,23 +1,16 @@
 <script setup>
-import {onBeforeMount, ref} from "vue";
+import {ref} from "vue";
 import Post from "@/components/Article.vue";
 import {getArticles} from '@/composable/api'
+import Loader from "@/components/Loader.vue";
 
-let articles = [];
-const articlesFilter = ref([]);
-
-onBeforeMount(() => {
-  getArticles().then(articlesData => {
-    articles = articlesData;
-    articlesFilter.value = articlesData;
-  })
-})
+const {articles,articlesFilter} = getArticles();
 
 const searchInput = ref("")
 
 const search = () => {
-  if (searchInput.value.length < 1) return articlesFilter.value = articles;
-  articlesFilter.value = articles.filter(article => (
+  if (searchInput.value.length < 1) return articlesFilter.value = articles.value;
+  articlesFilter.value = articles.value.filter(article => (
       article.title.toLowerCase().includes(searchInput.value.toLowerCase()) ||
       article.content.toLowerCase().includes(searchInput.value.toLowerCase()) ||
       article.User.username.toLowerCase().includes(searchInput.value.toLowerCase()) ||
@@ -28,7 +21,6 @@ const search = () => {
 
 <template>
   <main>
-    {{ articles.length }}
     <div class="pageBody">
       <div class="serversSearchContainer">
         <div class="serversSearchContent">
@@ -38,11 +30,12 @@ const search = () => {
           </div>
         </div>
       </div>
-      <div class="articleList">
+      <div class="articleList" v-if="articles">
         <div class="articlesContainer">
           <Post v-for="article in articlesFilter" :search="searchInput" :article="article"/>
         </div>
       </div>
+      <Loader v-else />
     </div>
   </main>
 </template>
