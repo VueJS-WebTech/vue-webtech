@@ -1,8 +1,8 @@
 <script setup>
 import {ref} from "vue";
-import Post from "@/components/Article.vue";
 import {getArticles} from '@/composable/api'
 import Loader from "@/components/Loader.vue";
+import Article from "@/components/Article.vue";
 
 const {articles,articlesFilter} = getArticles();
 
@@ -32,7 +32,7 @@ const search = () => {
       </div>
       <div class="articleList" v-if="articles">
         <div class="articlesContainer">
-          <Post v-for="article in articlesFilter" :search="searchInput" :article="article"/>
+          <Article v-for="article in articlesFilter" :search="searchInput" :article="article"/>
         </div>
       </div>
       <Loader v-else />

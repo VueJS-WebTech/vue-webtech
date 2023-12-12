@@ -1,6 +1,10 @@
 <script setup>
 defineProps(['article', 'search'])
 import router from "@/router";
+
+const searchSpan = (content, search) => {
+  return search.length < 1 ? content : content.replace(new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), match => `<span class='coloredText'>${match}</span>`);
+}
 </script>
 
 <template>
@@ -26,10 +30,16 @@ import router from "@/router";
     </div>
     <div class="content">
       <div class="articleTitle">
-        <h3>{{article.title}}</h3>
+        <h3 v-html="searchSpan(article.title, search)"></h3>
       </div>
       <div class="articleDescription">
-        <p v-html="article.content.toLowerCase().replace(`${search.toLowerCase()}`, `<span class='coloredText'>${search.toLowerCase()}</span>`)"></p>
+        <p v-html="searchSpan(article.content, search)"></p>
+      </div>
+      <div class="serverStatus">
+        <div class="reactionsResume">
+          <p tooltip="Auteur" class="lightText reactionTotalCount" @click="router.push({name: 'user', params: {userId: article.User.id}})"
+             v-html="searchSpan(article.User.name, search)"></p>
+        </div>
       </div>
     </div>
 
@@ -48,6 +58,7 @@ import router from "@/router";
   border-radius: 7.5px;
   border: 2px solid rgba(255, 255, 255, .1)
 }
+
 .articleCard:hover > .articleHeaderContainer .serverInformationButtonContainer {
   opacity: 1
 }
@@ -210,4 +221,60 @@ import router from "@/router";
   overflow: hidden;
 }
 
+.serverStatus {
+  background-color: #292b2f;
+  width: 100%;
+  position: absolute;
+  bottom: -10px;
+  left: -1.5px;
+  padding-top: 5px;
+  padding-bottom: 8px;
+  display: flex;
+  color: #cbd6d6;
+  border-bottom-left-radius: 7.5px;
+  border-bottom-right-radius: 7.5px;
+  border-bottom: 2px solid rgba(255, 255, 255, .1);
+  border-right: 2px solid rgba(255, 255, 255, .1);
+  border-left: 2px solid rgba(255, 255, 255, .1);
+}
+
+.reactionsResume {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1 auto;
+}
+
+.reactionsContent {
+  display: flex;
+  flex-direction: row;
+  margin-right: 3px;
+}
+
+.reactionBubbleItem {
+  display: flex;
+  margin-left: -10px;
+  width: 25px;
+  height: 25px;
+  border: 3px solid #202224;
+  border-radius: 50%;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.reactionBubbleItem img {
+  width: 100%;
+  height: 100%;
+}
+
+.reactionTotalCount {
+  background-color: rgba(0, 0, 0, .3);
+  border-radius: 7.5px;
+  border: solid rgba(255, 255, 255, .3) 1px;
+  padding: 0 5px;
+  align-items: center;
+  margin-right: 10px;
+  font-weight: bolder;
+  cursor: pointer;
+}
 </style>
